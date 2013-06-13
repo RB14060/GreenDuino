@@ -73,10 +73,10 @@ void relay_off()
 
 void debug() // Argument test system
 {
-  char* arg;
+  char* arg[5];
 
   Serial.println("SCI: Debug System launched.");
-  arg = controller.next();
+  arg[5] = controller.next();
 
   if (arg[5] != NULL)
   {
@@ -87,7 +87,7 @@ void debug() // Argument test system
     Serial.println("No first argument.");
   }
 
-  arg = controller.next();
+  arg[5] = controller.next();
   if (arg[5] != NULL)
   {
     Serial.print("SCI: Debug: Second argument was: ");
@@ -97,7 +97,7 @@ void debug() // Argument test system
     Serial.println("No second argument.");
   }
 
-  arg = controller.next();
+  arg[5] = controller.next();
   if (arg[5] != NULL)
   {
     Serial.print("SCI: Debug: Third argument was: ");
