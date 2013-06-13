@@ -73,7 +73,7 @@ void relay_off()
 
 void debug() // Argument test system
 {
-  char arg[5];
+  char* arg;
 
   Serial.println("SCI: Debug System launched.");
   arg = controller.next();
