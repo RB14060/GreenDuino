@@ -78,33 +78,13 @@ void debug() // Argument test system
   Serial.println("SCI: Debug System launched.");
   arg = controller.next();
 
-  if (arg != "")
+  if (arg != NULL)
   {
-    Serial.print("SCI: Debug: First argument was: ");
+    Serial.print("SCI: Debug: The argument was: ");
     Serial.println(arg);
   }
   else {
-    Serial.println("No first argument.");
-  }
-
-  arg = controller.next();
-  if (arg != "")
-  {
-    Serial.print("SCI: Debug: Second argument was: ");
-    Serial.println(arg);
-  }
-  else {
-    Serial.println("No second argument.");
-  }
-
-  arg = controller.next();
-  if (arg != "")
-  {
-    Serial.print("SCI: Debug: Third argument was: ");
-    Serial.println(arg);
-  }
-  else {
-    Serial.println("No third argument.");
+    Serial.println("No argument.");
   }
   Serial.println("SCI: Debug: Exiting debug system.");
 }
