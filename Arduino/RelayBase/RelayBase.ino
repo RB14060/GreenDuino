@@ -1,6 +1,6 @@
 /*
 Relay Controller Box skeleton code
-This could should be used and modified for the specific box being worked on.
+This code should be used and modified for the specific box being worked on.
 
 Version 0.1
 Ryan Becker - November 2013
@@ -25,12 +25,14 @@ boolean estop = false;
 boolean booted = false;
 boolean schedule = false;
 boolean menu = false;
+boolean alarm = false;
 int menuStage = 0;
 int menuSubStage = 0;
 #define SCREEN_TIMEOUT 5000
 #define SCREEN_OFF 10000
 unsigned long lastPress = millis();
 boolean timeout = false;
+int buttonCount = 0;
 
 void setup() { //setup hardware components
   startup = true;
@@ -75,14 +77,20 @@ void loop() {
         lcd.print("  NAME    E-STOP");
         displayMainTime();
         timeout = true;
+        buttonCount = 0;
+        break;
+      case CONTROLEO_BUTTON_BOTTOM:
+        fiveBeep();
+        buttonCount = 0;
         break;
      }
   }
   else if (booted == true) { //handle main screen
     switch (getButton()) {
       case CONTROLEO_BUTTON_TOP:
-        //booted = false;
-        //estop = true;
+        booted = false;
+        estop = true;
+        alarm();
         break;
     }
         displayMainTime();
@@ -130,6 +138,7 @@ int getButton()
     delay(50);
     lcd.setBuzzer(LOW);
     screenOn();
+    buttonCount++;
   }
   else if (pinValue > 900) {
     buttonValue = CONTROLEO_BUTTON_NONE;
@@ -140,6 +149,7 @@ int getButton()
    delay(50);
    lcd.setBuzzer(LOW);
    screenOn();
+   buttonCount++;
   }
   
   // Note the time the button was pressed
@@ -171,4 +181,18 @@ void displayMainTime() {
     }
     lcd.print(now.second(), DEC);
     lcd.print("    MENU");
+}
+
+void fiveBeep() {
+  for (int i=0;i<5;i++)
+  {
+    lcd.setBuzzer(HIGH);
+    delay(500);
+    lcd.setBuzzer(LOW);
+    delay(500);
+  }
+}
+
+void alarm() {
+  
 }
