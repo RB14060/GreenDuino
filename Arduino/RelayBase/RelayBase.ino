@@ -20,19 +20,11 @@ char *months[] = {"", "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "S
 char *nameOfDay[] = {"SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"};
 
 //define variables
-boolean startup = false;
-boolean estop = false;
-boolean booted = false;
-boolean schedule = false;
-boolean menu = false;
-boolean alarm = false;
-int menuStage = 0;
-int menuSubStage = 0;
+boolean startup, estop, booted, schedule, menu, alarm, alarmState, ack, timeout = false;
+int menuStage, menuSubStage, buttonCount = 0;
 #define SCREEN_TIMEOUT 5000
 #define SCREEN_OFF 10000
 unsigned long lastPress = millis();
-boolean timeout = false;
-int buttonCount = 0;
 
 void setup() { //setup hardware components
   startup = true;
@@ -86,15 +78,19 @@ void loop() {
      }
   }
   else if (booted == true) { //handle main screen
+    displayMainTime();
     switch (getButton()) {
       case CONTROLEO_BUTTON_TOP:
         booted = false;
         estop = true;
-        alarm();
+        handleAlarm();
+        break;
+      case CONTROLEO_BUTTON_BOTTOM:
         break;
     }
-        displayMainTime();
- delay(50);
+  }
+  else if (alarm == true) {
+    handleAlarm();
   }
   if (timeout == true) {
     if ((lastPress + SCREEN_TIMEOUT) < millis()) {
@@ -104,6 +100,7 @@ void loop() {
     //  lcd.noDisplay();  
     //}
   }
+  delay(50);
 }
 //the following code is from the ControLeo HardwareTest sketch
 
@@ -193,6 +190,72 @@ void fiveBeep() {
   }
 }
 
-void alarm() {
-  
+void handleAlarm() {
+  if (alarm == false)
+  {
+    lcd.home();
+    lcd.print("**ALARM**    ACK");
+    screenOn();
+    timeout = false;
+    if (estop = true);
+    {
+      lcd.setCursor(0,1);
+      lcd.print(" EMERGENCY STOP ");
+      for (int i=4;i<8;i++)
+      {
+        digitalWrite(i, LOW);
+      }
+    }
+    alarm = true;
+    alarmState = true;
+    lcd.setBuzzer(HIGH);
+  }
+  else if (ack == false)
+  {
+    switch(getButton())
+    {
+      case CONTROLEO_BUTTON_TOP:
+        ack = true;
+        alarmState = false;
+        lcd.setBuzzer(LOW);
+        lcd.setCursor(11,0);
+        lcd.print("CLEAR");
+        break;
+      case CONTROLEO_BUTTON_BOTTOM:
+        break;
+      default:
+       if (alarmState == true)
+        {
+          alarmState = false;
+          lcd.setBuzzer(LOW);
+          lcd.setCursor(13,0);
+          lcd.print("   ");
+        }
+       else
+        {
+          alarmState = true;
+          lcd.setBuzzer(HIGH);
+          lcd.setCursor(13,0);
+          lcd.print("ACK");
+        }
+   }
+ }
+ else
+ {
+   switch(getButton())
+   {
+    case CONTROLEO_BUTTON_TOP:
+      alarm = false;
+      ack = false;
+      estop = false;
+      booted = true;
+      lcd.home();
+      lcd.print("  NAME    E-STOP");
+      timeout = true;
+      break;
+    case CONTROLEO_BUTTON_BOTTOM:
+      break;
+   }
+}
+delay(500);
 }
